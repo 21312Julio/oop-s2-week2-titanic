@@ -1,38 +1,49 @@
 package com.company;
 
 import java.io.PrintStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Main {
-    public Main() {
-    }
 
     public static void main(String[] args) {
+
+        final String DB_URL = "jdbc:mysql://localhost:3306/titanicmanifest";
+        final String DB_USER = "Julio";
+        final String DB_PASSWORD = "gurthang.1";
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/titanicmanifest", "Julio", "gurthang.1");
+
+            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM PASSENGERS;");
-            System.out.println("before while");
+            String sqlQuery = "SELECT * FROM titanicmanifest.titanic;";
+
+            ResultSet rs = stmt.executeQuery(sqlQuery);
+
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfColumns = metaData.getColumnCount();
+            for(int i = 1; i <= numberOfColumns; i++) {
+                System.out.printf("%-8s\t", metaData.getColumnName(i));
+            }
+            System.out.println();
 
             while(rs.next()) {
                 PrintStream var10000 = System.out;
                 int var10001 = rs.getInt(1);
-                var10000.println(var10001 + " " + rs.getString(2) + " " + rs.getString(3)
-                        + " " + rs.getString(4) + " " + rs.getString(5) + " " + rs.getString(6)
-                        + " " + rs.getString(7) + " " + rs.getString(8) + " " + rs.getString(9)
-                        + " " + rs.getString(10) + " " + rs.getString(11));
+                var10000.println(var10001 + " " + rs.getInt(2) + " " + rs.getInt(3)
+                        + " " + rs.getString(4) + " " + rs.getString(5) + " " + rs.getInt(6)
+                        + " " + rs.getInt(7) + " " + rs.getInt(8) + " " + rs.getString(9)
+                        + " " + rs.getString(10) + " " + rs.getString(11) + " " + rs.getString(12));
             }
 
-            System.out.println("after while");
-            con.close();
-        } catch (Exception var7) {
-            System.out.println(var7.toString());
+        }
+        catch (SQLException e) {
+            System.out.println(e.toString());
+        } catch (Exception e) {
+
         } finally {
-            System.out.println("inside");
+            System.out.println("END OF QUERY");
         }
 
     }
